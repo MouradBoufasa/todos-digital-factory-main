@@ -2,16 +2,17 @@ import "./Home.scss";
 import { BsSearch } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { Button, Input } from "antd";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const { TextArea } = Input;
-
+  const { selectedTodo } = useSelector((state) => state.todos);
   return (
     <div className="Sidebar right">
       <div>
         <h3>Todo:</h3>
-        <Input placeholder={"Search..."} prefix={<BsSearch />} />
-        <TextArea rows={4} />
+        <Input placeholder={"Todo"} value={selectedTodo && selectedTodo.title} />
+        <TextArea rows={4} placeholder={'Todo description'} value={selectedTodo && selectedTodo.description} />
 
         <h3>Embeded Todos:</h3>
       </div>
