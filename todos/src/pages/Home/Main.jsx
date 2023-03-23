@@ -1,5 +1,6 @@
 import { Button, Input, Checkbox, Divider, Form } from "antd";
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
 import { axiosInstance } from "../../config/axios";
@@ -9,16 +10,20 @@ import { fetchTodos, selectTodo, updateTodo } from '../../redux/todos';
 
 const Main = () => {
   const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem('user'))[0];
+  const navigate = useNavigate();
+  const userLocalStorage = localStorage.getItem('user');
+
+  if (!userLocalStorage) {
+    return <div>Loading...</div>;
+  }
+
+  const user = JSON.parse(userLocalStorage)[0];
   const { todos } = useSelector((state) => state.todos);
 
   useEffect(() => {
-    dispatch(fetchTodos(user));
+    if (!user) navigate('/login')
+    dispatch(fetchTodos(user.id));
   }, []);
-
-  const checkTodo = async () => {
-
-  };
 
   const onSubmit = async (values) => {
     const todo = {
@@ -31,6 +36,15 @@ const Main = () => {
     };
 
     const res = await axiosInstance.post('/todos', todo);
+  };
+
+  const checkTodo = async (todo) => {
+    const updatedTodo = {
+      ...todo,
+      completed: !todo.completed
+    };
+
+    dispatch(updateTodo(updatedTodo));
   };
 
   return (
@@ -59,7 +73,7 @@ const Main = () => {
         .map((todo) => (
           <div key={todo.id} onClick={() => dispatch(selectTodo(todo))}>
             <div className="todo">
-              <Checkbox checked={todo.completed} onClick={() => dispatch(updateTodo(todo))}>{todo.title}</Checkbox>
+              <Checkbox checked={todo.completed} onClick={() => checkTodo(todo)}><span style={{ textDecoration: todo.completed && 'line-through' }}>{todo.title}</span></Checkbox>
               <IoIosArrowForward />
             </div>
             <Divider />

@@ -3,10 +3,20 @@ import { BsSearch } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { Button, Input } from "antd";
 import { useSelector } from "react-redux";
+import { updateTodo } from '../../redux/todos';
 
 const Home = () => {
   const { TextArea } = Input;
   const { selectedTodo } = useSelector((state) => state.todos);
+
+  const handleUpdate = async (todo, update) => {
+    const updatedTodo = {
+      ...todo,
+      ...update
+    };
+
+    dispatch(updateTodo(updatedTodo));
+  };
   return (
     <div className="Sidebar right">
       <div>

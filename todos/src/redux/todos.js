@@ -1,10 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../config/axios";
 
-export const fetchTodos = createAsyncThunk('todos/fetchTodos', async (user) => {
+export const fetchTodos = createAsyncThunk('todos/fetchTodos', async (userId) => {
     try {
-        const res = await axiosInstance.get(`todos?userId=${user.id}`);
-        if (res.data) localStorage.setItem('user', JSON.stringify(res.data));
+        const res = await axiosInstance.get(`todos?userId=${userId}`);
         return res.data;
     }
     catch (Error) {
@@ -13,11 +12,10 @@ export const fetchTodos = createAsyncThunk('todos/fetchTodos', async (user) => {
     };
 });
 
-export const updateTodo = createAsyncThunk('todos/updateTodo', async (todo) => {
+export const updateTodo = createAsyncThunk('todos/updateTodo', async (updatedTodo, { dispatch, getState }) => {
     try {
-        const updatedTodo = { ...todo, completed: true };
-        const res = await axiosInstance.patch(`/todos/${todo.id}`, updatedTodo);
-        console.log(res.data)
+        const res = await axiosInstance.patch(`/todos/${updatedTodo.id}`, updatedTodo);
+        return res.data;
     }
     catch (Error) {
         const message = (Error.response.data);
@@ -39,9 +37,14 @@ const todosSlice = createSlice({
             .addCase(fetchTodos.fulfilled, (state, action) => {
                 state.todos = action.payload
             })
-        // .addCase(updateTodo.fulfilled, (state, action) => {
-        //     state.todos = action.payload
-        // })
+            .addCase(updateTodo.fulfilled, (state, action) => {
+                const updatedTodo = action.payload;
+                const index = state.todos.findIndex((todo) => todo.id === updatedTodo.id);
+                if (index !== -1) {
+                    state.todos[index] = updatedTodo;
+                    state.selectedTodo = updatedTodo;
+                }
+            })
     }
 });
 
