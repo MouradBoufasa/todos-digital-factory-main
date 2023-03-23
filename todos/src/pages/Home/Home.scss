@@ -1,0 +1,53 @@
+.Home {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+
+  padding: 1vw;
+
+  .ant-divider {
+    margin: 0 !important;
+  }
+}
+
+.Sidebar {
+  width: 25vw;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--white);
+  border-radius: var(--border);
+
+  padding: 1vw;
+}
+
+.right {
+  width: 40vw;
+
+  .actions {
+    display: flex;
+    gap: 5px;
+  }
+}
+
+.Main {
+  padding: 10px;
+  width: 100%;
+
+  .input {
+    display: flex;
+    gap: 5px;
+  }
+
+  .todo {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.8rem;
+  }
+}
